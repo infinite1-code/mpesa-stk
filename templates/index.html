@@ -1,1 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Give Hope | Make a Donation</title>
+
+    <meta name="description"
+          content="Make a difference with a simple KSh 100 donation.">
+
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/script.js" defer></script>
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="/" class="brand">
+            <span class="brand-icon">♥</span>
+            Give Hope
+        </a>
+        <span class="secure-label">Secure giving</span>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="heart-art" aria-hidden="true">♥</div>
+
+            <p class="eyebrow">SMALL GIFT. BIG DIFFERENCE.</p>
+
+            <h1>Make someone's<br><span>day brighter.</span></h1>
+
+            <p class="intro">
+                Every act of kindness matters. Your contribution
+                helps make a positive difference, one donation at a time.
+            </p>
+
+            <div class="donation-card">
+                <div class="amount-label">YOUR DONATION</div>
+
+                <div class="amount">
+                    <span>KSh</span>
+                    <strong>100</strong>
+                </div>
+
+                <div class="fixed-label">
+                    <span aria-hidden="true">✓</span>
+                    Fixed donation amount
+                </div>
+
+                <form id="donationForm">
+                    <label for="phone">M-Pesa phone number</label>
+
+                    <div class="phone-input">
+                        <span class="country-code">+254</span>
+                        <input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            inputmode="numeric"
+                            autocomplete="tel"
+                            placeholder="7XX XXX XXX"
+                            maxlength="15"
+                            required
+                        >
+                    </div>
+
+                    <p class="input-help">
+                        Enter the Kenyan mobile number that should
+                        receive the STK Push.
+                    </p>
+
+                    <button id="donateButton" type="submit">
+                        <span id="buttonText">Donate KSh 100</span>
+                        <span aria-hidden="true"> →</span>
+                    </button>
+
+                    <div
+                        id="status"
+                        class="status"
+                        role="status"
+                        aria-live="polite"
+                        hidden
+                    ></div>
+                </form>
+
+                <div class="trust-note">
+                    <span aria-hidden="true">🔒</span>
+                    You authorize the payment on your own phone.
+                    Never share your M-Pesa PIN.
+                </div>
+            </div>
+
+            <p class="bottom-note">
+                Kindness starts with one small step.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Give Hope · Every contribution matters.</p>
+        <p class="demo-notice">
+            Demonstration website. Sandbox transactions do not
+            transfer real money.
+        </p>
+    </footer>
+</body>
+  </html>
