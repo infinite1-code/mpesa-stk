@@ -7,10 +7,10 @@
     <title>Give Hope | Make a Donation</title>
 
     <meta name="description"
-          content="Make a difference with a simple KSh 100 donation.">
+          content="Make a difference by choosing your own donation amount. Every contribution matters.">
 
-    <link rel="stylesheet" href="/style.css">
-<script src="/script.js" defer></script>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="/static/script.js" defer></script>
 </head>
 
 <body>
@@ -19,6 +19,7 @@
             <span class="brand-icon">♥</span>
             Give Hope
         </a>
+
         <span class="secure-label">Secure giving</span>
     </header>
 
@@ -38,21 +39,38 @@
             <div class="donation-card">
                 <div class="amount-label">YOUR DONATION</div>
 
-                <div class="amount">
-                    <span>KSh</span>
-                    <strong>100</strong>
-                </div>
-
-                <div class="fixed-label">
-                    <span aria-hidden="true">✓</span>
-                    Fixed donation amount
-                </div>
-
                 <form id="donationForm">
+
+                    <!-- Custom donation amount -->
+                    <label for="amount">How much would you like to give?</label>
+
+                    <div class="phone-input">
+                        <span class="country-code">KSh</span>
+
+                        <input
+                            id="amount"
+                            name="amount"
+                            type="number"
+                            inputmode="numeric"
+                            min="1"
+                            max="150000"
+                            step="1"
+                            placeholder="Enter amount"
+                            required
+                        >
+                    </div>
+
+                    <p class="input-help">
+                        Choose any whole-number amount from KSh 1
+                        to KSh 150,000.
+                    </p>
+
+                    <!-- M-Pesa phone number -->
                     <label for="phone">M-Pesa phone number</label>
 
                     <div class="phone-input">
                         <span class="country-code">+254</span>
+
                         <input
                             id="phone"
                             name="phone"
@@ -70,11 +88,13 @@
                         receive the STK Push.
                     </p>
 
+                    <!-- Donation button -->
                     <button id="donateButton" type="submit">
-                        <span id="buttonText">Donate KSh 100</span>
+                        <span id="buttonText">Donate Now</span>
                         <span aria-hidden="true"> →</span>
                     </button>
 
+                    <!-- Payment status -->
                     <div
                         id="status"
                         class="status"
@@ -99,10 +119,11 @@
 
     <footer>
         <p>Give Hope · Every contribution matters.</p>
+
         <p class="demo-notice">
             Demonstration website. Sandbox transactions do not
             transfer real money.
         </p>
     </footer>
 </body>
-  </html>
+</html>
