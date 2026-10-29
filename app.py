@@ -2,42 +2,68 @@ import os
 import re
 import base64
 import threading
-from datetime import datetime
+from datetime import datetime, timezone
 
-from flask import Flask, render_template, request, jsonify
 import requests
+from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
-# Daraja credentials: configure these as environment variables.
-CONSUMER_KEY = os.getenv("DARAJA_CONSUMER_KEY", "")
-CONSUMER_SECRET = os.getenv("DARAJA_CONSUMER_SECRET", "")
-SHORTCODE = os.getenv("DARAJA_SHORTCODE", "")
-PASSKEY = os.getenv("DARAJA_PASSKEY", "")
-CALLBACK_URL = os.getenv("DARAJA_CALLBACK_URL", "")
+# ============================================================
+# DARAJA CONFIGURATION
+# ============================================================
 
-# Safaricom Daraja sandbox.
-BASE_URL = "https://sandbox.safaricom.co.ke"
+DARAJA_ENV = os.getenv("DARAJA_ENV", "production").strip().lower()
 
-# Donation limits.
+if DARAJA_ENV == "production":
+    BASE_URL = "https://api.safaricom.co.ke"
+elif DARAJA_ENV == "sandbox":
+    BASE_URL = "https://sandbox.safaricom.co.ke"
+else:
+    raise RuntimeError(
+        "DARAJA_ENV must be either 'production' or 'sandbox'."
+    )
+
+CONSUMER_KEY = os.getenv("DARAJA_CONSUMER_KEY", "").strip()
+CONSUMER_SECRET = os.getenv("DARAJA_CONSUMER_SECRET", "").strip()
+SHORTCODE = os.getenv("DARAJA_SHORTCODE", "").strip()
+PASSKEY = os.getenv("DARAJA_PASSKEY", "").strip()
+CALLBACK_URL = os.getenv("DARAJA_CALLBACK_URL", "").strip()
+
+# Set this to:
+#   CustomerPayBillOnline  for a supported PayBill integration
+#   CustomerBuyGoodsOnline for a supported Buy Goods Till integration
+TRANSACTION_TYPE = os.getenv(
+    "DARAJA_TRANSACTION_TYPE",
+    "CustomerBuyGoodsOnline",
+).strip()
+
+# For a Till, set this to the actual Till number when required.
+# For a PayBill, this normally matches the business shortcode.
+PARTY_B = os.getenv("DARAJA_PARTY_B", "").strip() or SHORTCODE
+
 MIN_DONATION = 1
 MAX_DONATION = 150000
-CURRENCY = "KES"
 
-# DEMO ONLY:
-# In-memory storage can be lost on restart and is not shared across
-# Vercel serverless instances. Use a persistent database before relying
-# on payment-status polling in a deployed application.
+# IMPORTANT:
+# This in-memory store is only suitable for a local/demo example.
+# Vercel serverless instances do not share memory reliably.
+# Use a persistent database before relying on payment status in production.
 transactions = {}
 transactions_lock = threading.Lock()
 
 
+# ============================================================
+# VALIDATION
+# ============================================================
+
 def normalize_phone(phone):
-    """Normalize Kenyan mobile numbers to 2547XXXXXXXX / 2541XXXXXXXX."""
     digits = re.sub(r"\D", "", str(phone or ""))
 
     if digits.startswith("0") and len(digits) == 10:
         digits = "254" + digits[1:]
+    elif digits.startswith("254") and len(digits) == 12:
+        pass
     elif digits.startswith("7") and len(digits) == 9:
         digits = "254" + digits
     elif digits.startswith("1") and len(digits) == 9:
@@ -52,37 +78,69 @@ def normalize_phone(phone):
 
 
 def validate_amount(value):
-    """Validate the donation amount received from the browser."""
     if isinstance(value, bool) or value is None:
-        raise ValueError("Please enter your donation amount.")
+        raise ValueError("Please enter an amount.")
 
-    # Reject decimals, empty strings, and other invalid values.
     amount_text = str(value).strip()
 
     if not re.fullmatch(r"\d+", amount_text):
-        raise ValueError("Enter a whole-number donation amount in KSh.")
+        raise ValueError("Enter a whole-number amount in KSh.")
 
     amount = int(amount_text)
 
     if amount < MIN_DONATION:
-        raise ValueError(
-            f"The minimum donation is KSh {MIN_DONATION}."
-        )
+        raise ValueError(f"The minimum amount is KSh {MIN_DONATION}.")
 
     if amount > MAX_DONATION:
         raise ValueError(
-            f"The maximum donation is KSh {MAX_DONATION:,}."
+            f"The maximum amount is KSh {MAX_DONATION:,}."
         )
 
     return amount
 
 
-def get_access_token():
-    """Obtain an OAuth access token from Daraja."""
-    if not CONSUMER_KEY or not CONSUMER_SECRET:
+def validate_configuration():
+    missing = []
+
+    if not CONSUMER_KEY:
+        missing.append("DARAJA_CONSUMER_KEY")
+    if not CONSUMER_SECRET:
+        missing.append("DARAJA_CONSUMER_SECRET")
+    if not SHORTCODE:
+        missing.append("DARAJA_SHORTCODE")
+    if not PASSKEY:
+        missing.append("DARAJA_PASSKEY")
+    if not CALLBACK_URL:
+        missing.append("DARAJA_CALLBACK_URL")
+    if not PARTY_B:
+        missing.append("DARAJA_PARTY_B")
+
+    if missing:
         raise RuntimeError(
-            "Daraja Consumer Key and Consumer Secret are not configured."
+            "Missing environment variables: " + ", ".join(missing)
         )
+
+    if not CALLBACK_URL.startswith("https://"):
+        raise RuntimeError("The callback URL must use HTTPS.")
+
+    allowed_types = {
+        "CustomerPayBillOnline",
+        "CustomerBuyGoodsOnline",
+    }
+
+    if TRANSACTION_TYPE not in allowed_types:
+        raise RuntimeError(
+            "DARAJA_TRANSACTION_TYPE must be "
+            "CustomerPayBillOnline or CustomerBuyGoodsOnline."
+        )
+
+
+# ============================================================
+# DARAJA AUTHENTICATION
+# ============================================================
+
+def get_access_token():
+    validate_configuration()
 
     response = requests.get(
         f"{BASE_URL}/oauth/v1/generate",
@@ -91,82 +149,87 @@ def get_access_token():
         timeout=20,
     )
 
-    response.raise_for_status()
+    if not response.ok:
+        app.logger.error(
+            "Daraja OAuth failed: HTTP %s; response=%s",
+            response.status_code,
+            response.text[:500],
+        )
+        response.raise_for_status()
 
-    token = response.json().get("access_token")
+    try:
+        result = response.json()
+    except ValueError as exc:
+        raise RuntimeError(
+            "Daraja OAuth returned an invalid response."
+        ) from exc
+
+    token = result.get("access_token")
 
     if not token:
+        app.logger.error(
+            "Daraja OAuth response contained no access token."
+        )
         raise RuntimeError("Daraja did not return an access token.")
 
     return token
 
+
+# ============================================================
+# WEBSITE
+# ============================================================
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
+# ============================================================
+# INITIATE STK PUSH
+# ============================================================
+
 @app.route("/api/donate", methods=["POST"])
 def donate():
     data = request.get_json(silent=True) or {}
 
-    # Validate the phone number.
     try:
         phone = normalize_phone(data.get("phone", ""))
-    except ValueError as exc:
-        return jsonify({"error": str(exc)}), 400
-
-    # Validate the amount on the server.
-    try:
         amount = validate_amount(data.get("amount"))
     except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
 
-    # Ensure the required Daraja configuration exists.
-    if not all([SHORTCODE, PASSKEY, CALLBACK_URL]):
-        return jsonify({
-            "error": (
-                "The Daraja shortcode, passkey, or callback URL "
-                "has not been configured."
-            )
-        }), 500
-
-    if not CALLBACK_URL.startswith("https://"):
-        return jsonify({
-            "error": "The callback URL must be a public HTTPS URL."
-        }), 500
-
     try:
+        validate_configuration()
         token = get_access_token()
 
-        # Generate the timestamp and STK Push password.
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
 
-        password_string = f"{SHORTCODE}{PASSKEY}{timestamp}"
-
+        password_source = f"{SHORTCODE}{PASSKEY}{timestamp}"
         password = base64.b64encode(
-            password_string.encode("utf-8")
+            password_source.encode("utf-8")
         ).decode("utf-8")
 
-        # Initiate the STK Push using the donor's chosen amount.
         payload = {
             "BusinessShortCode": SHORTCODE,
             "Password": password,
             "Timestamp": timestamp,
-            "TransactionType": "CustomerPayBillOnline",
+            "TransactionType": TRANSACTION_TYPE,
             "Amount": amount,
             "PartyA": phone,
-            "PartyB": SHORTCODE,
+            "PartyB": PARTY_B,
             "PhoneNumber": phone,
             "CallBackURL": CALLBACK_URL,
-            "AccountReference": "DONATION",
-            "TransactionDesc": f"KSh {amount} donation",
+            "AccountReference": "ANNNAFULA",
+            "TransactionDesc": f"Registration payment KSh {amount}",
         }
 
         response = requests.post(
             f"{BASE_URL}/mpesa/stkpush/v1/processrequest",
             json=payload,
-            headers={"Authorization": f"Bearer {token}"},
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+            },
             timeout=30,
         )
 
@@ -176,57 +239,81 @@ def donate():
             result = {}
 
         if not response.ok or result.get("ResponseCode") != "0":
-            app.logger.warning("Daraja STK request was rejected.")
+            # Log the response for troubleshooting. Do not log credentials.
+            app.logger.error(
+                "Daraja STK rejected: HTTP %s; response=%s",
+                response.status_code,
+                response.text[:1000],
+            )
 
-            return jsonify({
-                "error": result.get(
-                    "errorMessage",
-                    result.get(
-                        "ResponseDescription",
-                        "Daraja rejected the STK request."
-                    )
-                )
-            }), 502
+            message = (
+                result.get("errorMessage")
+                or result.get("ResponseDescription")
+                or "Daraja rejected the STK request. Check server logs."
+            )
+
+            return jsonify({"error": message}), 502
 
         checkout_id = result.get("CheckoutRequestID")
+        merchant_id = result.get("MerchantRequestID")
 
         if not checkout_id:
+            app.logger.error(
+                "Daraja returned success without CheckoutRequestID."
+            )
             return jsonify({
-                "error": "Daraja returned no CheckoutRequestID."
+                "error": "Daraja returned no checkout request ID."
             }), 502
 
-        # Store the transaction for status polling.
+        # Demo-only storage. Replace with a persistent database for production.
         with transactions_lock:
             transactions[checkout_id] = {
                 "status": "pending",
                 "amount": amount,
-                "phone": phone,
                 "receipt": None,
+                "created_at": datetime.now(timezone.utc).isoformat(),
             }
 
+        app.logger.info(
+            "STK request accepted: checkout_id=%s",
+            checkout_id,
+        )
+
         return jsonify({
-            "message": (
-                f"STK Push requested for KSh {amount:,}. "
-                "Check your phone."
-            ),
+            "message": "STK Push requested. Check your phone.",
             "checkoutRequestId": checkout_id,
+            "merchantRequestId": merchant_id,
             "amount": amount,
         }), 200
 
-    except requests.RequestException:
-        app.logger.exception("Daraja network request failed.")
-
+    except requests.Timeout:
+        app.logger.exception("Daraja request timed out.")
         return jsonify({
-            "error": "Could not contact Daraja. Please try again."
+            "error": "Daraja timed out. Check payment status before retrying."
+        }), 504
+
+    except requests.RequestException:
+        app.logger.exception("Could not connect to Daraja.")
+        return jsonify({
+            "error": "Could not connect to Daraja. Check server logs."
         }), 502
 
-    except Exception:
-        app.logger.exception("Unexpected donation error.")
-
+    except RuntimeError as exc:
+        app.logger.error("Daraja configuration error: %s", str(exc))
         return jsonify({
-            "error": "An unexpected error occurred."
+            "error": "Daraja configuration is incomplete or invalid."
         }), 500
 
+    except Exception:
+        app.logger.exception("Unexpected STK Push error.")
+        return jsonify({
+            "error": "An unexpected server error occurred."
+        }), 500
+
+
+# ============================================================
+# PAYMENT STATUS
+# ============================================================
 
 @app.route("/api/status/<checkout_id>", methods=["GET"])
 def payment_status(checkout_id):
@@ -235,10 +322,13 @@ def payment_status(checkout_id):
 
         if not transaction:
             return jsonify({
-                "error": "Transaction not found."
+                "error": (
+                    "Transaction status is unavailable. "
+                    "Check your M-Pesa message before retrying."
+                ),
+                "status": "unknown",
             }), 404
 
-        # Do not expose phone numbers or other personal information.
         return jsonify({
             "status": transaction["status"],
             "receipt": transaction["receipt"],
@@ -246,25 +336,25 @@ def payment_status(checkout_id):
         })
 
 
+# ============================================================
+# DARAJA CALLBACK
+# ============================================================
+
 @app.route("/api/mpesa-callback", methods=["POST"])
 def mpesa_callback():
     body = request.get_json(silent=True) or {}
 
-    callback = (
-        body.get("Body", {})
-        .get("stkCallback", {})
-    )
+    callback = body.get("Body", {}).get("stkCallback", {})
 
     checkout_id = callback.get("CheckoutRequestID")
     result_code = callback.get("ResultCode")
 
     if not checkout_id or result_code is None:
         app.logger.warning("Received malformed Daraja callback.")
-
         return jsonify({
-            "ResultCode": 1,
-            "ResultDesc": "Invalid callback data",
-        }), 400
+            "ResultCode": 0,
+            "ResultDesc": "Callback received",
+        }), 200
 
     receipt = None
 
@@ -286,15 +376,11 @@ def mpesa_callback():
             if result_code == 0 and receipt:
                 transaction["status"] = "success"
                 transaction["receipt"] = receipt
-
             elif result_code != 0:
                 transaction["status"] = "failed"
-
             else:
-                # A success result without a receipt needs investigation.
                 transaction["status"] = "pending"
 
-    # Avoid logging phone numbers, credentials, or the complete payload.
     app.logger.info(
         "Daraja callback received: checkout_id=%s result_code=%s",
         checkout_id,
@@ -307,9 +393,13 @@ def mpesa_callback():
     }), 200
 
 
+# ============================================================
+# LOCAL DEVELOPMENT
+# ============================================================
+
 if __name__ == "__main__":
     app.run(
         host="127.0.0.1",
         port=5000,
-        debug=False
-        )
+        debug=False,
+    )
