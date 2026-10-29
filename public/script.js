@@ -1,10 +1,14 @@
 const form = document.getElementById("donationForm");
 const phoneInput = document.getElementById("phone");
+const amountInput = document.getElementById("amount");
 const donateButton = document.getElementById("donateButton");
 const buttonText = document.getElementById("buttonText");
 const statusBox = document.getElementById("status");
 
 let requestInProgress = false;
+
+const MIN_DONATION = 1;
+const MAX_DONATION = 150000;
 
 function showStatus(message, type = "pending") {
     statusBox.textContent = message;
@@ -16,7 +20,7 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function checkPaymentStatus(checkoutId) {
+async function checkPaymentStatus(checkoutId, amount) {
     // Poll for up to 90 seconds.
     for (let i = 0; i < 30; i++) {
         await sleep(3000);
@@ -43,7 +47,7 @@ async function checkPaymentStatus(checkoutId) {
                 : "";
 
             showStatus(
-                `Thank you! Your KSh 100 donation was confirmed.${receipt}`,
+                `Thank you! Your KSh ${amount.toLocaleString("en-KE")} donation was confirmed.${receipt}`,
                 "success"
             );
 
@@ -75,10 +79,29 @@ form.addEventListener("submit", async function (event) {
     }
 
     const phone = phoneInput.value.trim();
+    const amountValue = amountInput.value.trim();
+    const amount = Number(amountValue);
 
+    // Validate the phone number field.
     if (!phone) {
         showStatus("Please enter your M-Pesa phone number.", "error");
         phoneInput.focus();
+        return;
+    }
+
+    // Validate the chosen donation amount.
+    if (
+        amountValue === "" ||
+        !Number.isSafeInteger(amount) ||
+        amount < MIN_DONATION ||
+        amount > MAX_DONATION
+    ) {
+        showStatus(
+            `Please enter a whole-number donation between KSh ${MIN_DONATION} and KSh ${MAX_DONATION.toLocaleString("en-KE")}.`,
+            "error"
+        );
+
+        amountInput.focus();
         return;
     }
 
@@ -93,7 +116,10 @@ form.addEventListener("submit", async function (event) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ phone })
+            body: JSON.stringify({
+                phone: phone,
+                amount: amount
+            })
         });
 
         const result = await response.json();
@@ -107,12 +133,13 @@ form.addEventListener("submit", async function (event) {
         }
 
         showStatus(
-            "STK Push requested. Check your phone and follow the " +
-            "M-Pesa instructions. Waiting for payment confirmation...",
+            `STK Push requested for KSh ${amount.toLocaleString("en-KE")}. ` +
+            "Check your phone and follow the M-Pesa instructions. " +
+            "Waiting for payment confirmation...",
             "pending"
         );
 
-        await checkPaymentStatus(result.checkoutRequestId);
+        await checkPaymentStatus(result.checkoutRequestId, amount);
 
     } catch (error) {
         showStatus(
@@ -122,6 +149,6 @@ form.addEventListener("submit", async function (event) {
     } finally {
         requestInProgress = false;
         donateButton.disabled = false;
-        buttonText.textContent = "Donate KSh 100";
+        buttonText.textContent = "Donate Now";
     }
 });
