@@ -1,510 +1,569 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
 
 :root {
---pink: #e94e77;
---pink-dark: #c92f5c;
---pink-light: #fff0f5;
---rose: #ff8fab;
---purple: #805ad5;
---text: #30202a;
---muted: #857580;
---white: #ffffff;
---border: #f0dfe7;
---success: #16845b;
---error: #c62845;
---shadow: 0 24px 70px rgba(117, 39, 76, 0.13);
+    --pink: #e94e77;
+    --pink-dark: #c92f5c;
+    --pink-light: #fff0f5;
+    --rose: #ff8fab;
+    --purple: #805ad5;
+    --text: #30202a;
+    --muted: #857580;
+    --white: #ffffff;
+    --border: #f0dfe7;
+    --success: #16845b;
+    --error: #c62845;
+    --shadow: 0 24px 70px rgba(117, 39, 76, 0.13);
 }
 
 * {
-  box-sizing: border-box;
-  }
+    box-sizing: border-box;
+}
 
 html {
-scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 body {
-margin: 0;
-min-height: 100vh;
-color: var(--text);
-font-family: 'DM Sans', sans-serif;
-background:
-radial-gradient(ellipse at 8% 10%, rgba(255, 183, 204, 0.28), transparent 35%),
-radial-gradient(ellipse at 95% 85%, rgba(196, 181, 253, 0.22), transparent 35%),
-linear-gradient(145deg, #fff9fb 0%, #fff3f7 45%, #fffafd 100%);
--webkit-font-smoothing: antialiased;
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    background:
+        radial-gradient(
+            ellipse at 8% 10%,
+            rgba(255, 183, 204, 0.28),
+            transparent 35%
+        ),
+        radial-gradient(
+            ellipse at 95% 85%,
+            rgba(196, 181, 253, 0.22),
+            transparent 35%
+        ),
+        linear-gradient(
+            145deg,
+            #fff9fb 0%,
+            #fff3f7 45%,
+            #fffafd 100%
+        );
+    -webkit-font-smoothing: antialiased;
 }
 
 /* Navigation */
 
 .navbar {
-width: 100%;
-min-height: 76px;
-padding: 18px 7%;
-display: flex;
-align-items: center;
-justify-content: space-between;
-gap: 15px;
-border-bottom: 1px solid rgba(233, 78, 119, 0.09);
-background: rgba(255, 255, 255, 0.78);
-backdrop-filter: blur(16px);
--webkit-backdrop-filter: blur(16px);
+    width: 100%;
+    min-height: 76px;
+    padding: 18px 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-bottom: 1px solid rgba(233, 78, 119, 0.09);
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .brand {
-display: inline-flex;
-align-items: center;
-gap: 10px;
-color: var(--text);
-text-decoration: none;
-font-family: 'Playfair Display', serif;
-font-size: 25px;
-font-weight: 700;
-letter-spacing: -0.7px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+    text-decoration: none;
+    font-family: 'Playfair Display', serif;
+    font-size: 25px;
+    font-weight: 700;
+    letter-spacing: -0.7px;
 }
 
 .brand-icon {
-color: var(--pink);
-font-family: sans-serif;
-font-size: 29px;
-animation: heartbeat 2s ease-in-out infinite;
+    color: var(--pink);
+    font-family: sans-serif;
+    font-size: 29px;
+    animation: heartbeat 2s ease-in-out infinite;
 }
 
 .secure-label {
-color: var(--pink-dark);
-font-size: 12px;
-font-weight: 700;
-letter-spacing: 0.6px;
-padding: 9px 14px;
-border: 1px solid #f6d5e0;
-background: #fff4f8;
-border-radius: 30px;
+    padding: 9px 14px;
+    color: var(--pink-dark);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    border: 1px solid #f6d5e0;
+    background: #fff4f8;
+    border-radius: 30px;
 }
 
 /* Main layout */
 
 main {
-width: 100%;
+    width: 100%;
 }
 
 .hero {
-width: 100%;
-max-width: 760px;
-margin: 0 auto;
-padding: 55px 22px 35px;
-text-align: center;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 55px 22px 35px;
+    text-align: center;
 }
 
 .heart-art {
-width: 76px;
-height: 76px;
-margin: 0 auto 26px;
-display: grid;
-place-items: center;
-color: white;
-font-family: sans-serif;
-font-size: 39px;
-border-radius: 24px;
-background: linear-gradient(135deg, #ff9bb6, #e94e77 65%, #d83c6b);
-box-shadow: 0 12px 30px rgba(233, 78, 119, 0.28);
-transform: rotate(-5deg);
-animation: floatHeart 4s ease-in-out infinite;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 26px;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-family: sans-serif;
+    font-size: 39px;
+    border-radius: 24px;
+    background: linear-gradient(
+        135deg,
+        #ff9bb6,
+        #e94e77 65%,
+        #d83c6b
+    );
+    box-shadow: 0 12px 30px rgba(233, 78, 119, 0.28);
+    transform: rotate(-5deg);
+    animation: floatHeart 4s ease-in-out infinite;
 }
 
 .eyebrow {
-margin: 0 0 15px;
-color: var(--pink-dark);
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 2.5px;
-line-height: 1.8;
+    margin: 0 0 15px;
+    color: var(--pink-dark);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    line-height: 1.8;
 }
 
 .hero h1 {
-margin: 0;
-color: #30202a;
-font-family: 'Playfair Display', serif;
-font-size: clamp(43px, 8vw, 68px);
-font-weight: 700;
-line-height: 1.12;
-letter-spacing: -1.8px;
+    margin: 0;
+    color: var(--text);
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(43px, 8vw, 68px);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -1.8px;
 }
 
 .hero h1 span {
-color: var(--pink);
+    color: var(--pink);
 }
 
 .intro {
-max-width: 510px;
-margin: 20px auto 32px;
-color: var(--muted);
-font-size: 15px;
-line-height: 1.9;
+    max-width: 510px;
+    margin: 20px auto 32px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.9;
 }
 
 /* Registration card */
 
 .donation-card {
-position: relative;
-width: 100%;
-max-width: 470px;
-margin: 0 auto;
-padding: 34px;
-text-align: left;
-background: rgba(255, 255, 255, 0.96);
-border: 1px solid rgba(255, 255, 255, 0.9);
-border-radius: 25px;
-box-shadow: var(--shadow);
-overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 470px;
+    margin: 0 auto;
+    padding: 34px;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 25px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
 }
 
 .donation-card::before {
-content: "";
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-height: 5px;
-background: linear-gradient(90deg, #ff9bb6, #e94e77, #a78bfa);
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(
+        90deg,
+        #ff9bb6,
+        #e94e77,
+        #a78bfa
+    );
 }
 
 .amount-label {
-margin-bottom: 23px;
-color: var(--pink-dark);
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 1.8px;
-text-align: center;
+    margin-bottom: 23px;
+    color: var(--pink-dark);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-align: center;
 }
 
 .registration-note {
-margin: 0 0 25px;
-padding: 15px;
-color: #70445a;
-font-size: 13px;
-line-height: 1.8;
-text-align: center;
-background: linear-gradient(135deg, #fff2f6, #fff8fb);
-border: 1px solid #fce2eb;
-border-radius: 13px;
+    margin: 0 0 25px;
+    padding: 15px;
+    color: #70445a;
+    font-size: 13px;
+    line-height: 1.8;
+    text-align: center;
+    background: linear-gradient(
+        135deg,
+        #fff2f6,
+        #fff8fb
+    );
+    border: 1px solid #fce2eb;
+    border-radius: 13px;
 }
 
-#donationForm label {
-display: block;
-margin: 21px 0 10px;
-color: #493440;
-font-size: 13px;
-font-weight: 700;
+/* Registration form */
+
+#registrationForm {
+    width: 100%;
+}
+
+#registrationForm .fee-label {
+    display: block;
+    margin: 21px 0 10px;
+    color: #493440;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: left;
 }
 
 .phone-input {
-display: flex;
-align-items: center;
-width: 100%;
-min-height: 56px;
-padding: 0 15px;
-gap: 12px;
-background: #fffafd;
-border: 1px solid var(--border);
-border-radius: 13px;
-transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 56px;
+    padding: 0 15px;
+    gap: 12px;
+    background: #fffafd;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
 
 .phone-input:focus-within {
-background: white;
-border-color: var(--pink);
-box-shadow: 0 0 0 4px rgba(233, 78, 119, 0.10);
+    background: white;
+    border-color: var(--pink);
+    box-shadow: 0 0 0 4px rgba(233, 78, 119, 0.10);
 }
 
 .country-code {
-flex-shrink: 0;
-padding-right: 12px;
-color: var(--pink-dark);
-font-size: 13px;
-font-weight: 700;
-border-right: 1px solid #f1dce5;
+    flex-shrink: 0;
+    padding-right: 12px;
+    color: var(--pink-dark);
+    font-size: 13px;
+    font-weight: 700;
+    border-right: 1px solid #f1dce5;
 }
 
 .phone-input input {
-width: 100%;
-min-width: 0;
-padding: 16px 0;
-color: var(--text);
-font-family: inherit;
-font-size: 14px;
-background: transparent;
-border: none;
-outline: none;
+    width: 100%;
+    min-width: 0;
+    padding: 16px 0;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    background: transparent;
+    border: none;
+    outline: none;
 }
 
 .phone-input input::placeholder {
-color: #b6a6b0;
+    color: #b6a6b0;
 }
 
 .phone-input input:focus-visible {
-outline: none;
+    outline: none;
 }
 
 .input-help {
-margin: 9px 2px 0;
-color: #94838d;
-font-size: 11px;
-line-height: 1.7;
+    margin: 9px 2px 0;
+    color: #94838d;
+    font-size: 11px;
+    line-height: 1.7;
 }
 
-/* Payment button */
+/* Registration payment button */
 
-#donateButton {
-width: 100%;
-min-height: 57px;
-margin-top: 27px;
-padding: 16px 20px;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 9px;
-color: white;
-font-family: inherit;
-font-size: 14px;
-font-weight: 700;
-letter-spacing: 0.3px;
-background: linear-gradient(110deg, #ed5b83, #dc3f6b 60%, #ca315d);
-border: none;
-border-radius: 13px;
-box-shadow: 0 10px 24px rgba(220, 63, 107, 0.23);
-cursor: pointer;
-transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+#payButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    min-height: 57px;
+    margin-top: 27px;
+    padding: 16px 20px;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-align: center;
+    background: linear-gradient(
+        110deg,
+        #ed5b83,
+        #dc3f6b 60%,
+        #ca315d
+    );
+    border: none;
+    border-radius: 13px;
+    box-shadow: 0 10px 24px rgba(220, 63, 107, 0.23);
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease,
+        opacity 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
-#donateButton:hover:not(:disabled) {
-transform: translateY(-2px);
-box-shadow: 0 14px 28px rgba(220, 63, 107, 0.31);
-filter: saturate(1.08);
+#payButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(220, 63, 107, 0.31);
+    filter: saturate(1.08);
 }
 
-#donateButton:active:not(:disabled) {
-transform: translateY(0);
+#payButton:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 5px 14px rgba(220, 63, 107, 0.2);
 }
 
-#donateButton:focus-visible {
-outline: 3px solid rgba(233, 78, 119, 0.35);
-outline-offset: 4px;
+#payButton:focus-visible {
+    outline: 3px solid rgba(233, 78, 119, 0.35);
+    outline-offset: 4px;
 }
 
-#donateButton:disabled {
-cursor: wait;
-opacity: 0.72;
-box-shadow: none;
+#payButton:disabled {
+    cursor: wait;
+    opacity: 0.72;
+    box-shadow: none;
+    transform: none;
+    filter: none;
 }
 
 /* Payment feedback */
 
-.status {
-margin-top: 18px;
-padding: 14px;
-border-radius: 12px;
-font-size: 13px;
-line-height: 1.8;
-overflow-wrap: anywhere;
+#paymentStatus {
+    margin-top: 18px;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
 }
 
-.status[hidden] {
-display: none;
+#paymentStatus[hidden] {
+    display: none;
 }
 
-.status.pending {
-color: #805b13;
-background: #fff8e6;
-border: 1px solid #f6e4ae;
+#paymentStatus.pending {
+    color: #805b13;
+    background: #fff8e6;
+    border: 1px solid #f6e4ae;
 }
 
-.status.success {
-color: #176c4c;
-background: #eaf9f1;
-border: 1px solid #bdebd1;
+#paymentStatus.success {
+    color: #176c4c;
+    background: #eaf9f1;
+    border: 1px solid #bdebd1;
 }
 
-.status.error {
-color: #a42b42;
-background: #fff0f2;
-border: 1px solid #f4c8d0;
+#paymentStatus.error {
+    color: #a42b42;
+    background: #fff0f2;
+    border: 1px solid #f4c8d0;
 }
 
 /* Trust and footer */
 
 .trust-note {
-margin-top: 24px;
-display: flex;
-align-items: flex-start;
-justify-content: center;
-gap: 8px;
-color: #8a7a84;
-font-size: 11px;
-line-height: 1.8;
-text-align: center;
+    margin-top: 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    color: #8a7a84;
+    font-size: 11px;
+    line-height: 1.8;
+    text-align: center;
 }
 
 .trust-note span {
-flex-shrink: 0;
+    flex-shrink: 0;
 }
 
 .bottom-note {
-margin: 27px 0 0;
-color: #987b8a;
-font-family: 'Playfair Display', serif;
-font-size: 15px;
-font-style: italic;
-line-height: 1.8;
+    margin: 27px 0 0;
+    color: #987b8a;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-style: italic;
+    line-height: 1.8;
 }
 
 footer {
-padding: 26px 20px 30px;
-color: #9a8993;
-font-size: 11px;
-line-height: 1.9;
-text-align: center;
-border-top: 1px solid rgba(233, 78, 119, 0.08);
+    padding: 26px 20px 30px;
+    color: #9a8993;
+    font-size: 11px;
+    line-height: 1.9;
+    text-align: center;
+    border-top: 1px solid rgba(233, 78, 119, 0.08);
 }
 
 footer p {
-margin: 4px 0;
+    margin: 4px 0;
 }
 
 .demo-notice {
-color: #b09da7;
-font-size: 10px;
+    color: #b09da7;
+    font-size: 10px;
 }
 
 /* Animations */
 
 @keyframes heartbeat {
-0%, 100% {
-transform: scale(1);
-}
+    0%,
+    100% {
+        transform: scale(1);
+    }
 
-10%, 25% {
-    transform: scale(1.12);
-}
+    10%,
+    25% {
+        transform: scale(1.12);
+    }
 
-18%, 32% {
-    transform: scale(1);
-}
-
+    18%,
+    32% {
+        transform: scale(1);
+    }
 }
 
 @keyframes floatHeart {
-0%, 100% {
-transform: translateY(0) rotate(-5deg);
+    0%,
+    100% {
+        transform: translateY(0) rotate(-5deg);
+    }
+
+    50% {
+        transform: translateY(-6px) rotate(3deg);
+    }
 }
 
-50% {
-    transform: translateY(-6px) rotate(3deg);
-}
-
-}
-
-/* Mobile */
+/* Mobile layout */
 
 @media (max-width: 600px) {
-.navbar {
-min-height: 66px;
-padding: 15px 19px;
+    .navbar {
+        min-height: 66px;
+        padding: 15px 19px;
+    }
+
+    .brand {
+        gap: 7px;
+        font-size: 21px;
+    }
+
+    .brand-icon {
+        font-size: 25px;
+    }
+
+    .secure-label {
+        padding: 8px 10px;
+        font-size: 9px;
+        letter-spacing: 0;
+    }
+
+    .hero {
+        padding: 37px 17px 28px;
+    }
+
+    .heart-art {
+        width: 66px;
+        height: 66px;
+        margin-bottom: 22px;
+        font-size: 33px;
+        border-radius: 21px;
+    }
+
+    .eyebrow {
+        font-size: 9px;
+        letter-spacing: 1.7px;
+    }
+
+    .hero h1 {
+        font-size: clamp(41px, 11vw, 55px);
+        letter-spacing: -1.2px;
+    }
+
+    .intro {
+        margin: 17px auto 25px;
+        font-size: 13px;
+        line-height: 1.85;
+    }
+
+    .donation-card {
+        padding: 27px 21px;
+        border-radius: 21px;
+    }
+
+    .amount-label {
+        margin-bottom: 20px;
+        font-size: 10px;
+    }
+
+    .registration-note {
+        padding: 13px;
+        font-size: 12px;
+    }
+
+    #registrationForm .fee-label {
+        font-size: 12px;
+    }
+
+    .phone-input {
+        min-height: 53px;
+        padding: 0 12px;
+        gap: 10px;
+    }
+
+    .phone-input input {
+        font-size: 14px;
+    }
+
+    #payButton {
+        min-height: 54px;
+        font-size: 13px;
+    }
+
+    #paymentStatus {
+        font-size: 12px;
+    }
+
+    .trust-note {
+        font-size: 10px;
+    }
+
+    .bottom-note {
+        font-size: 14px;
+    }
 }
 
-.brand {
-    gap: 7px;
-    font-size: 21px;
-}
-
-.brand-icon {
-    font-size: 25px;
-}
-
-.secure-label {
-    padding: 8px 10px;
-    font-size: 9px;
-    letter-spacing: 0;
-}
-
-.hero {
-    padding: 37px 17px 28px;
-}
-
-.heart-art {
-    width: 66px;
-    height: 66px;
-    margin-bottom: 22px;
-    font-size: 33px;
-    border-radius: 21px;
-}
-
-.eyebrow {
-    font-size: 9px;
-    letter-spacing: 1.7px;
-}
-
-.hero h1 {
-    font-size: clamp(41px, 11vw, 55px);
-    letter-spacing: -1.2px;
-}
-
-.intro {
-    margin: 17px auto 25px;
-    font-size: 13px;
-    line-height: 1.85;
-}
-
-.donation-card {
-    padding: 27px 21px;
-    border-radius: 21px;
-}
-
-.amount-label {
-    margin-bottom: 20px;
-    font-size: 10px;
-}
-
-.registration-note {
-    padding: 13px;
-    font-size: 12px;
-}
-
-#donationForm label {
-    font-size: 12px;
-}
-
-.phone-input {
-    min-height: 53px;
-    padding: 0 12px;
-    gap: 10px;
-}
-
-.phone-input input {
-    font-size: 14px;
-}
-
-#donateButton {
-    min-height: 54px;
-    font-size: 13px;
-}
-
-.trust-note {
-    font-size: 10px;
-}
-
-.bottom-note {
-    font-size: 14px;
-}
-
-}
+/* Accessibility: reduce animation when requested */
 
 @media (prefers-reduced-motion: reduce) {
-*,
-*::before,
-*::after {
-scroll-behavior: auto !important;
-animation-duration: 0.01ms !important;
-animation-iteration-count: 1 !important;
-transition-duration: 0.01ms !important;
-}
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
+  }
