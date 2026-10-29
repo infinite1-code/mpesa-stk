@@ -111,52 +111,12 @@ h1 span {
 }
 
 .amount-label {
+    margin-bottom: 24px;
     color: var(--muted);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-align: center;
-}
-
-.amount {
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-    gap: 9px;
-    margin: 10px 0 12px;
-}
-
-.amount span {
-    color: var(--primary);
-    font-size: 19px;
-    font-weight: 600;
-}
-
-.amount strong {
-    font-family: 'Manrope', sans-serif;
-    font-size: 59px;
-    font-weight: 800;
-    letter-spacing: -3px;
-}
-
-.fixed-label {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 7px;
-    color: var(--primary);
-    font-size: 12px;
-    margin-bottom: 29px;
-}
-
-.fixed-label span {
-    display: grid;
-    place-items: center;
-    width: 17px;
-    height: 17px;
-    background: #e4f5eb;
-    border-radius: 50%;
-    font-size: 11px;
 }
 
 label {
@@ -175,6 +135,7 @@ label {
     border: 1px solid #dce7df;
     border-radius: 12px;
     background: #fcfefd;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .phone-input:focus-within {
@@ -183,6 +144,7 @@ label {
 }
 
 .country-code {
+    flex-shrink: 0;
     color: var(--text);
     font-weight: 700;
     font-size: 14px;
@@ -201,8 +163,27 @@ label {
     font-size: 15px;
 }
 
+.phone-input input::placeholder {
+    color: #a0ada5;
+}
+
+.phone-input input:focus-visible {
+    outline: none;
+}
+
+input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 .input-help {
-    margin: 9px 0 20px;
+    margin: 9px 0 22px;
     color: var(--muted);
     font-size: 11px;
     line-height: 1.6;
@@ -211,6 +192,7 @@ label {
 button {
     width: 100%;
     min-height: 54px;
+    margin-top: 4px;
     padding: 14px;
     background: var(--primary);
     border: none;
@@ -220,7 +202,7 @@ button {
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
+    transition: background 0.2s, transform 0.2s, opacity 0.2s;
 }
 
 button:hover {
@@ -229,6 +211,11 @@ button:hover {
 
 button:active {
     transform: scale(0.99);
+}
+
+button:focus-visible {
+    outline: 3px solid rgba(8, 127, 91, 0.3);
+    outline-offset: 3px;
 }
 
 button:disabled {
@@ -245,6 +232,10 @@ button:disabled {
     font-size: 13px;
     line-height: 1.6;
     overflow-wrap: anywhere;
+}
+
+.status[hidden] {
+    display: none;
 }
 
 .status.error {
@@ -305,4 +296,14 @@ footer {
     h1 {
         letter-spacing: -1.5px;
     }
-  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
