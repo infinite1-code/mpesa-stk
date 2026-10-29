@@ -1,14 +1,14 @@
-const form = document.getElementById("donationForm");
+const registrationForm = document.getElementById("registrationForm");
 const phoneInput = document.getElementById("phone");
 const amountInput = document.getElementById("amount");
-const donateButton = document.getElementById("donateButton");
+const payButton = document.getElementById("payButton");
 const buttonText = document.getElementById("buttonText");
-const statusBox = document.getElementById("status");
+const statusBox = document.getElementById("paymentStatus");
 
 let requestInProgress = false;
 
-const MIN_DONATION = 1;
-const MAX_DONATION = 150000;
+const MIN_FEE = 1;
+const MAX_FEE = 150000;
 
 function showStatus(message, type = "pending") {
     statusBox.textContent = message;
@@ -39,15 +39,21 @@ async function checkPaymentStatus(checkoutId, amount) {
             continue;
         }
 
-        const result = await response.json();
+        let result;
+
+        try {
+            result = await response.json();
+        } catch {
+            continue;
+        }
 
         if (result.status === "success") {
             const receipt = result.receipt
-                ? ` Receipt number: ${result.receipt}.`
+                ? ` M-Pesa receipt: ${result.receipt}.`
                 : "";
 
             showStatus(
-                `Thank you! Your KSh ${amount.toLocaleString("en-KE")} donation was confirmed.${receipt}`,
+                `Payment confirmed! Your registration fee of KSh ${amount.toLocaleString("en-KE")} has been received.${receipt}`,
                 "success"
             );
 
@@ -56,8 +62,17 @@ async function checkPaymentStatus(checkoutId, amount) {
 
         if (result.status === "failed") {
             showStatus(
-                "The payment was not completed. You can try again.",
+                "The M-Pesa payment was not completed. Check your M-Pesa messages before trying again.",
                 "error"
+            );
+
+            return;
+        }
+
+        if (result.status === "unknown") {
+            showStatus(
+                "We could not retrieve your payment status. Check your M-Pesa messages before making another payment.",
+                "pending"
             );
 
             return;
@@ -65,13 +80,12 @@ async function checkPaymentStatus(checkoutId, amount) {
     }
 
     showStatus(
-        "The payment is still awaiting confirmation. Check your " +
-        "M-Pesa messages before trying again.",
+        "Your payment is still awaiting confirmation. Check your M-Pesa messages before trying again.",
         "pending"
     );
 }
 
-form.addEventListener("submit", async function (event) {
+registrationForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     if (requestInProgress) {
@@ -82,22 +96,24 @@ form.addEventListener("submit", async function (event) {
     const amountValue = amountInput.value.trim();
     const amount = Number(amountValue);
 
-    // Validate the phone number field.
     if (!phone) {
-        showStatus("Please enter your M-Pesa phone number.", "error");
+        showStatus(
+            "Please enter your M-Pesa phone number.",
+            "error"
+        );
+
         phoneInput.focus();
         return;
     }
 
-    // Validate the chosen donation amount.
     if (
         amountValue === "" ||
         !Number.isSafeInteger(amount) ||
-        amount < MIN_DONATION ||
-        amount > MAX_DONATION
+        amount < MIN_FEE ||
+        amount > MAX_FEE
     ) {
         showStatus(
-            `Please enter a whole-number donation between KSh ${MIN_DONATION} and KSh ${MAX_DONATION.toLocaleString("en-KE")}.`,
+            `Enter a whole-number registration fee between KSh ${MIN_FEE} and KSh ${MAX_FEE.toLocaleString("en-KE")}.`,
             "error"
         );
 
@@ -106,11 +122,12 @@ form.addEventListener("submit", async function (event) {
     }
 
     requestInProgress = true;
-    donateButton.disabled = true;
-    buttonText.textContent = "Sending request...";
+    payButton.disabled = true;
+    buttonText.textContent = "Initiating Payment...";
     statusBox.hidden = true;
 
     try {
+        // Keep this endpoint because it is defined in the current app.py.
         const response = await fetch("/api/donate", {
             method: "POST",
             headers: {
@@ -122,33 +139,51 @@ form.addEventListener("submit", async function (event) {
             })
         });
 
-        const result = await response.json();
+        let result;
+
+        try {
+            result = await response.json();
+        } catch {
+            result = {};
+        }
 
         if (!response.ok) {
             showStatus(
-                result.error || "Could not initiate the payment.",
+                result.error ||
+                "We could not initiate your registration payment. Please try again.",
                 "error"
             );
+
+            return;
+        }
+
+        if (!result.checkoutRequestId) {
+            showStatus(
+                "The payment request could not be verified. Check your M-Pesa messages before trying again.",
+                "error"
+            );
+
             return;
         }
 
         showStatus(
-            `STK Push requested for KSh ${amount.toLocaleString("en-KE")}. ` +
-            "Check your phone and follow the M-Pesa instructions. " +
-            "Waiting for payment confirmation...",
+            `An M-Pesa payment prompt has been requested for KSh ${amount.toLocaleString("en-KE")}. Check your phone and follow the instructions. Waiting for confirmation...`,
             "pending"
         );
 
-        await checkPaymentStatus(result.checkoutRequestId, amount);
+        await checkPaymentStatus(
+            result.checkoutRequestId,
+            amount
+        );
 
     } catch (error) {
         showStatus(
-            "Unable to contact the website. Check your connection and try again.",
+            "Unable to contact the website. Check your internet connection and try again.",
             "error"
         );
     } finally {
         requestInProgress = false;
-        donateButton.disabled = false;
-        buttonText.textContent = "Donate Now";
+        payButton.disabled = false;
+        buttonText.textContent = "Pay Registration Fee";
     }
 });
