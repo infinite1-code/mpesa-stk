@@ -1,129 +1,172 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Ann Nafula | Find Your Connection</title>
+<meta name="description" content="Welcome to Ann Nafula, a place to meet new people and explore meaningful connections.">
 
-    <title>Give Hope | Make a Donation</title>
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/script.js" defer></script>
 
-    <meta name="description"
-          content="Make a difference by choosing your own donation amount. Every contribution matters.">
+<style>
+    .brand-icon {
+        color: #e94e77;
+    }
 
-    <link rel="stylesheet" href="/style.css">
-    <script src="/script.js" defer></script>
-</head>
+    .hero {
+        padding-top: 35px;
+    }
 
-<body>
+    .heart-art {
+        color: #e94e77;
+    }
+
+    .eyebrow {
+        color: #e94e77;
+        letter-spacing: 2px;
+        font-weight: 700;
+    }
+
+    .hero h1 span {
+        color: #e94e77;
+    }
+
+    .registration-note {
+        margin: 0 0 22px;
+        padding: 13px;
+        background: #fff1f5;
+        border-radius: 10px;
+        color: #71364a;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .fee-label {
+        display: block;
+        margin-bottom: 9px;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    .trust-note {
+        line-height: 1.6;
+    }
+
+    .bottom-note {
+        margin-top: 24px;
+    }
+</style>
+
+</head><body>
     <header class="navbar">
         <a href="/" class="brand">
-            <span class="brand-icon">♥</span>
-            Give Hope
+            <span class="brand-icon" aria-hidden="true">♥</span>
+            Ann Nafula
         </a>
+        <span class="secure-label">Meet. Connect. Belong.</span>
+    </header><main>
+    <section class="hero">
+        <div class="heart-art" aria-hidden="true">♥</div>
 
-        <span class="secure-label">Secure giving</span>
-    </header>
+        <p class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</p>
 
-    <main>
-        <section class="hero">
-            <div class="heart-art" aria-hidden="true">♥</div>
+        <h1>
+            Find your<br>
+            <span>connection.</span>
+        </h1>
 
-            <p class="eyebrow">SMALL GIFT. BIG DIFFERENCE.</p>
-
-            <h1>Make someone's<br><span>day brighter.</span></h1>
-
-            <p class="intro">
-                Every act of kindness matters. Your contribution
-                helps make a positive difference, one donation at a time.
-            </p>
-
-            <div class="donation-card">
-                <div class="amount-label">YOUR DONATION</div>
-
-                <form id="donationForm">
-
-                    <!-- Custom donation amount -->
-                    <label for="amount">How much would you like to give?</label>
-
-                    <div class="phone-input">
-                        <span class="country-code">KSh</span>
-
-                        <input
-                            id="amount"
-                            name="amount"
-                            type="number"
-                            inputmode="numeric"
-                            min="1"
-                            max="150000"
-                            step="1"
-                            placeholder="Enter amount"
-                            required
-                        >
-                    </div>
-
-                    <p class="input-help">
-                        Choose any whole-number amount from KSh 1
-                        to KSh 150,000.
-                    </p>
-
-                    <!-- M-Pesa phone number -->
-                    <label for="phone">M-Pesa phone number</label>
-
-                    <div class="phone-input">
-                        <span class="country-code">+254</span>
-
-                        <input
-                            id="phone"
-                            name="phone"
-                            type="tel"
-                            inputmode="numeric"
-                            autocomplete="tel"
-                            placeholder="7XX XXX XXX"
-                            maxlength="15"
-                            required
-                        >
-                    </div>
-
-                    <p class="input-help">
-                        Enter the Kenyan mobile number that should
-                        receive the STK Push.
-                    </p>
-
-                    <!-- Donation button -->
-                    <button id="donateButton" type="submit">
-                        <span id="buttonText">Donate Now</span>
-                        <span aria-hidden="true"> →</span>
-                    </button>
-
-                    <!-- Payment status -->
-                    <div
-                        id="status"
-                        class="status"
-                        role="status"
-                        aria-live="polite"
-                        hidden
-                    ></div>
-                </form>
-
-                <div class="trust-note">
-                    <span aria-hidden="true">🔒</span>
-                    You authorize the payment on your own phone.
-                    Never share your M-Pesa PIN.
-                </div>
-            </div>
-
-            <p class="bottom-note">
-                Kindness starts with one small step.
-            </p>
-        </section>
-    </main>
-
-    <footer>
-        <p>Give Hope · Every contribution matters.</p>
-
-        <p class="demo-notice">
-            Demonstration website. Sandbox transactions do not
-            transfer real money.
+        <p class="intro">
+            Meet new people, make meaningful connections, and discover
+            where a conversation could lead.
         </p>
-    </footer>
+
+        <div class="donation-card">
+            <div class="amount-label">CREATE YOUR REGISTRATION</div>
+
+            <p class="registration-note">
+                Ready to join Ann Nafula? Enter your registration fee and
+                M-Pesa number below to begin the payment process.
+            </p>
+
+            <form id="donationForm">
+                <label class="fee-label" for="amount">
+                    Registration fee (KSh)
+                </label>
+
+                <div class="phone-input">
+                    <span class="country-code">KSh</span>
+                    <input
+                        id="amount"
+                        name="amount"
+                        type="number"
+                        inputmode="numeric"
+                        min="1"
+                        max="150000"
+                        step="1"
+                        placeholder="Enter registration fee"
+                        required
+                    >
+                </div>
+
+                <p class="input-help">
+                    Enter the registration fee displayed by the website
+                    administrator.
+                </p>
+
+                <label class="fee-label" for="phone">
+                    Your M-Pesa phone number
+                </label>
+
+                <div class="phone-input">
+                    <span class="country-code">+254</span>
+                    <input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        inputmode="numeric"
+                        autocomplete="tel"
+                        placeholder="7XX XXX XXX"
+                        maxlength="15"
+                        required
+                    >
+                </div>
+
+                <p class="input-help">
+                    Check that your number is correct before continuing.
+                </p>
+
+                <button id="donateButton" type="submit">
+                    <span id="buttonText">Pay to Register</span>
+                    <span aria-hidden="true"> →</span>
+                </button>
+
+                <div
+                    id="status"
+                    class="status"
+                    role="status"
+                    aria-live="polite"
+                    hidden
+                ></div>
+            </form>
+
+            <div class="trust-note">
+                <span aria-hidden="true">🔒</span>
+                Review the amount carefully. You authorize any M-Pesa
+                payment on your own phone. Never share your M-Pesa PIN.
+            </div>
+        </div>
+
+        <p class="bottom-note">
+            Every meaningful connection begins with a conversation. 💗
+        </p>
+    </section>
+</main>
+
+<footer>
+    <p>Ann Nafula · Meet new people and explore connections.</p>
+    <p class="demo-notice">
+        Payment demonstration: sandbox transactions do not transfer real money.
+    </p>
+</footer>
+
 </body>
 </html>
